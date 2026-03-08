@@ -54,14 +54,16 @@ export function useReels() {
   }, [fetchList])
 
   const upload = useCallback(
-    async (file: File, title?: string): Promise<boolean> => {
+    async (file: File, title?: string): Promise<{ success: true } | { success: false; message: string }> => {
       if (!user?.id) {
-        setError('로그인이 필요합니다.')
-        return false
+        const msg = '로그인이 필요합니다.'
+        setError(msg)
+        return { success: false, message: msg }
       }
       if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
-        setError(`파일 크기는 ${MAX_FILE_SIZE_MB}MB 이하여야 합니다.`)
-        return false
+        const msg = `파일 크기는 ${MAX_FILE_SIZE_MB}MB 이하여야 합니다.`
+        setError(msg)
+        return { success: false, message: msg }
       }
 
       setUploading(true)
@@ -78,7 +80,7 @@ export function useReels() {
       if (uploadError) {
         setError(uploadError.message)
         setUploading(false)
-        return false
+        return { success: false, message: uploadError.message }
       }
 
       const { error: insertError } = await supabase.from('reels').insert({
@@ -90,15 +92,17 @@ export function useReels() {
       if (insertError) {
         setError(insertError.message)
         setUploading(false)
-        return false
+        return { success: false, message: insertError.message }
       }
 
       await fetchList()
       setUploading(false)
-      return true
+      return { success: true }
     },
     [user?.id, fetchList]
   )
 
-  return { list, loading, error, uploading, upload, refresh: fetchList }
+  const clearError = useCallback(() => setError(null), [])
+
+  return { list, loading, error, uploading, upload, refresh: fetchList, clearError }
 }

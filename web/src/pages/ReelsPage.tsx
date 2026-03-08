@@ -5,7 +5,7 @@ import './ReelsPage.css'
 
 export default function ReelsPage() {
   const { user } = useAuth()
-  const { list, loading, error, uploading, upload } = useReels()
+  const { list, loading, error, uploading, upload, clearError } = useReels()
   const [modalOpen, setModalOpen] = useState(false)
   const [title, setTitle] = useState('')
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
@@ -21,6 +21,7 @@ export default function ReelsPage() {
 
   const handleUploadClick = () => {
     if (!user) return
+    clearError()
     setModalOpen(true)
     setTitle('')
     setSelectedFile(null)
@@ -45,7 +46,6 @@ export default function ReelsPage() {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
       streamRef.current = stream
       setCameraMode(true)
-      if (previewRef.current) previewRef.current.srcObject = stream
     } catch (err) {
       setCameraError(err instanceof Error ? err.message : '카메라/마이크 접근이 거부되었습니다.')
     }
@@ -99,19 +99,31 @@ export default function ReelsPage() {
     }
   }, [modalOpen])
 
+  useEffect(() => {
+    if (!cameraMode || !streamRef.current) return
+    const video = previewRef.current
+    if (video) {
+      video.srcObject = streamRef.current
+      video.play().catch(() => {})
+    }
+    return () => {
+      if (video) video.srcObject = null
+    }
+  }, [cameraMode])
+
   const handleSubmitUpload = async () => {
     if (!selectedFile) {
       alert('영상 파일을 선택하거나 카메라로 촬영해 주세요.')
       return
     }
-    const success = await upload(selectedFile, title || undefined)
-    if (success) {
+    const result = await upload(selectedFile, title || undefined)
+    if (result.success) {
       setModalOpen(false)
       setTitle('')
       setSelectedFile(null)
       if (fileInputRef.current) fileInputRef.current.value = ''
     } else {
-      alert('업로드에 실패했습니다.')
+      alert(`업로드에 실패했습니다. ${result.message || ''}`.trim())
     }
   }
 
@@ -164,15 +176,21 @@ export default function ReelsPage() {
 
             {!cameraMode ? (
               <>
-                <p className="reels-modal-label">파일에서 선택</p>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="video/*"
-                  onChange={handleFileChange}
-                  className="reels-modal-file"
-                />
-                <p className="reels-modal-divider">또는</p>
+                <div className="reels-modal-section">
+                  <p className="reels-modal-label">파일에서 선택</p>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="video/*"
+                    onChange={handleFileChange}
+                    className="reels-modal-file"
+                  />
+                </div>
+                <div className="reels-modal-divider">
+                  <span className="reels-modal-divider-line" />
+                  <span className="reels-modal-divider-text">또는</span>
+                  <span className="reels-modal-divider-line" />
+                </div>
                 <button type="button" className="reels-modal-camera-btn" onClick={startCamera}>
                   카메라로 촬영
                 </button>
@@ -200,6 +218,7 @@ export default function ReelsPage() {
               </div>
             )}
 
+            {error && <p className="reels-modal-error">{error}</p>}
             {selectedFile && (
               <>
                 <p className="reels-modal-filename">{selectedFile.name}</p>

@@ -1,4 +1,6 @@
--- Run in Supabase SQL Editor. Also create Storage bucket "reels" in Dashboard (Storage -> New bucket, name: reels, Public).
+-- Run in Supabase SQL Editor.
+-- 1. Create Storage bucket "reels" in Dashboard: Storage -> New bucket, name: reels, Public.
+-- 2. Run this file, then run the Storage policy below (or in a second run) so uploads succeed.
 
 create table if not exists public.reels (
   id uuid primary key default gen_random_uuid(),
@@ -17,3 +19,13 @@ create policy "Anyone can read reels"
 drop policy if exists "Users can insert own" on public.reels;
 create policy "Users can insert own"
   on public.reels for insert with check (auth.uid() = user_id);
+
+-- Storage: allow authenticated users to upload into their own folder (path: {user_id}/...)
+-- Run this after the "reels" bucket exists (Storage -> New bucket -> reels, Public).
+drop policy if exists "Users can upload to own folder" on storage.objects;
+create policy "Users can upload to own folder"
+  on storage.objects for insert to authenticated
+  with check (
+    bucket_id = 'reels'
+    and (storage.foldername(name))[1] = auth.uid()::text
+  );

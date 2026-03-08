@@ -89,33 +89,63 @@
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 24px;
+  animation: reels-modal-overlay-in 0.2s ease-out;
+}
+
+@keyframes reels-modal-overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .reels-modal {
   width: 100%;
   max-width: 400px;
-  background: #1e293b;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  padding: 24px;
+  background: linear-gradient(165deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  animation: reels-modal-in 0.25s ease-out;
+}
+
+@keyframes reels-modal-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 .reels-modal-title {
-  margin: 0 0 20px;
-  font-size: 18px;
-  font-weight: 700;
-  color: #e2e8f0;
+  margin: 0 0 24px;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #f1f5f9;
+}
+
+.reels-modal-section {
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  margin-bottom: 16px;
 }
 
 .reels-modal-file {
   display: block;
   width: 100%;
-  margin-bottom: 12px;
+  margin-top: 8px;
+  margin-bottom: 0;
   font-size: 14px;
   color: #e2e8f0;
 }
@@ -133,10 +163,17 @@
   color: #e2e8f0;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 10px;
+  border-radius: 12px;
   font-family: inherit;
   margin-bottom: 20px;
   box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.reels-modal-input:focus {
+  outline: none;
+  border-color: rgba(14, 165, 233, 0.5);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
 }
 
 .reels-modal-input::placeholder {
@@ -147,17 +184,19 @@
   display: flex;
   gap: 12px;
   justify-content: flex-end;
+  margin-top: 4px;
 }
 
 .reels-modal-cancel,
 .reels-modal-submit {
-  padding: 10px 20px;
+  padding: 12px 22px;
   font-size: 14px;
   font-weight: 600;
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
   font-family: inherit;
   border: none;
+  transition: background 0.2s ease, transform 0.15s ease;
 }
 
 .reels-modal-cancel {
@@ -167,21 +206,36 @@
 
 .reels-modal-cancel:hover:not(:disabled) {
   background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-1px);
 }
 
 .reels-modal-submit {
   color: #fff;
-  background: #0ea5e9;
+  background: linear-gradient(180deg, #0ea5e9 0%, #0284c7 100%);
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.35);
 }
 
 .reels-modal-submit:hover:not(:disabled) {
-  background: #0284c7;
+  background: linear-gradient(180deg, #38bdf8 0%, #0ea5e9 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4);
+}
+
+.reels-modal-cancel:focus-visible,
+.reels-modal-submit:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+}
+
+.reels-modal-submit:focus-visible {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3), 0 2px 8px rgba(14, 165, 233, 0.35);
 }
 
 .reels-modal-cancel:disabled,
 .reels-modal-submit:disabled {
   opacity: 0.7;
   cursor: not-allowed;
+  transform: none;
 }
 
 .reels-modal-wide {
@@ -195,42 +249,77 @@
 }
 
 .reels-modal-divider {
-  margin: 16px 0;
-  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 20px 0;
+}
+
+.reels-modal-divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+}
+
+.reels-modal-divider-text {
+  font-size: 12px;
+  font-weight: 500;
   color: #64748b;
-  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
 .reels-modal-camera-btn {
   width: 100%;
-  padding: 12px 20px;
+  padding: 14px 20px;
   font-size: 15px;
   font-weight: 600;
-  color: #fff;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
+  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
   cursor: pointer;
   font-family: inherit;
-  transition: background 0.2s ease, border-color 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
 }
 
 .reels-modal-camera-btn:hover {
-  background: rgba(255, 255, 255, 0.18);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.reels-modal-camera-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.4);
+}
+
+.reels-modal-error {
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  font-size: 13px;
+  color: #fca5a5;
+  background: rgba(248, 113, 113, 0.12);
+  border: 1px solid rgba(248, 113, 113, 0.25);
+  border-radius: 10px;
 }
 
 .reels-camera-box {
   margin-bottom: 16px;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
 }
 
 .reels-camera-preview {
   width: 100%;
   max-height: 320px;
-  background: #000;
+  background: #0f172a;
   border-radius: 12px;
   object-fit: cover;
   margin-bottom: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .reels-camera-error {
@@ -247,33 +336,37 @@
 }
 
 .reels-modal-record-btn {
-  padding: 10px 24px;
+  padding: 12px 26px;
   font-size: 14px;
   font-weight: 600;
   color: #fff;
-  background: #0ea5e9;
+  background: linear-gradient(180deg, #0ea5e9 0%, #0284c7 100%);
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
   font-family: inherit;
+  transition: background 0.2s ease, transform 0.15s ease;
 }
 
 .reels-modal-record-btn:hover {
-  background: #0284c7;
+  background: linear-gradient(180deg, #38bdf8 0%, #0ea5e9 100%);
+  transform: translateY(-1px);
 }
 
 .reels-modal-stop-btn {
-  padding: 10px 24px;
+  padding: 12px 26px;
   font-size: 14px;
   font-weight: 600;
   color: #fff;
-  background: #dc2626;
+  background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
   font-family: inherit;
+  transition: background 0.2s ease, transform 0.15s ease;
 }
 
 .reels-modal-stop-btn:hover {
-  background: #b91c1c;
+  background: linear-gradient(180deg, #f87171 0%, #ef4444 100%);
+  transform: translateY(-1px);
 }
