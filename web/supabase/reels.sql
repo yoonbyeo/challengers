@@ -14,7 +14,7 @@ alter table public.reels enable row level security;
 
 drop policy if exists "Anyone can read reels" on public.reels;
 create policy "Anyone can read reels"
-  on public.reels for select using (true);
+  on public.reels for select to public using (true);
 
 drop policy if exists "Users can insert own" on public.reels;
 create policy "Users can insert own"
@@ -29,3 +29,9 @@ create policy "Users can upload to own folder"
     bucket_id = 'reels'
     and (storage.foldername(name))[1] = auth.uid()::text
   );
+
+-- Storage: allow anyone (anon + authenticated) to read reels files so all users see uploaded videos
+drop policy if exists "Public can read reels files" on storage.objects;
+create policy "Public can read reels files"
+  on storage.objects for select to public
+  using (bucket_id = 'reels');
