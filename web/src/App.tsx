@@ -7,6 +7,7 @@ import AuthCallback from './pages/AuthCallback'
 import ChallengeDetail from './pages/ChallengeDetail'
 import ChallengeBrowse from './pages/ChallengeBrowse'
 import ProfilePage from './pages/ProfilePage'
+import ShopPage from './pages/ShopPage'
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
           <Route element={<Layout />}>
             <Route path="/" element={<HomePage />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/shop" element={<ShopPage />} />
             <Route path="/challenge/:id" element={<ChallengeDetail />} />
             <Route path="/challenge/:id/browse" element={<ChallengeBrowse />} />
           </Route>

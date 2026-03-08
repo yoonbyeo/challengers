@@ -1,36 +1,43 @@
-// @ts-nocheck
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import { useProfile } from '../hooks/useProfile'
+import CoinIcon from '../components/CoinIcon'
 import './ProfilePage.css'
 
 export default function ProfilePage() {
-  const { user, profile, loading, signOut, withdrawCCoins } = useAuth()
+  const { user, loading, signOut } = useAuth()
+  const { profile, loading: profileLoading, updateDisplayName } = useProfile()
   const navigate = useNavigate()
-  const [withdrawAmount, setWithdrawAmount] = useState('')
+  const [editName, setEditName] = useState('')
+  const [saving, setSaving] = useState(false)
+
+  const displayName =
+    profile?.display_name?.trim() ||
+    user?.user_metadata?.full_name ||
+    user?.user_metadata?.name ||
+    user?.email ||
+    '사용자'
 
   useEffect(() => {
     if (!loading && !user) navigate('/login', { replace: true })
   }, [user, loading, navigate])
+
+  useEffect(() => {
+    setEditName(displayName)
+  }, [displayName])
 
   const handleSignOut = async () => {
     await signOut()
     navigate('/', { replace: true })
   }
 
-  const handleWithdraw = () => {
-    const amount = Number(withdrawAmount)
-    if (isNaN(amount) || amount < 3000) {
-      alert('최소 3000 C 코인부터 환전할 수 있습니다.')
-      return
-    }
-    const success = withdrawCCoins(amount)
-    if (success) {
-      alert(`${amount} C 코인이 성공적으로 환전(출금)되었습니다.`)
-      setWithdrawAmount('')
-    } else {
-      alert('잔액이 부족합니다.')
-    }
+  const handleSaveName = async () => {
+    const name = editName.trim()
+    if (name === (profile?.display_name ?? '').trim()) return
+    setSaving(true)
+    await updateDisplayName(name || '')
+    setSaving(false)
   }
 
   if (loading) {
@@ -44,7 +51,6 @@ export default function ProfilePage() {
   if (!user) return null
 
   const avatarUrl = user.user_metadata?.avatar_url ?? user.user_metadata?.picture
-  const displayName = user.user_metadata?.full_name ?? user.user_metadata?.name ?? user.email ?? '사용자'
 
   return (
     <div className="profile-page">
@@ -58,25 +64,32 @@ export default function ProfilePage() {
           )}
         </div>
         <h1 className="profile-name">{displayName}</h1>
-        {user.email && <p className="profile-email">{user.email}</p>}
-        
-        <div className="profile-finance">
-          <h2 className="profile-finance-balance">내 자산: {profile?.cCoinBalance.toLocaleString() ?? 0} C 코인</h2>
-          <div className="profile-finance-form">
-            <input 
-              type="number" 
-              className="profile-finance-input" 
-              value={withdrawAmount} 
-              onChange={(e) => setWithdrawAmount(e.target.value)} 
-              placeholder="환전액 (최소 3000)" 
-            />
-            <button type="button" className="profile-finance-btn" onClick={handleWithdraw}>
-              환전하기
-            </button>
-          </div>
-          <p className="profile-finance-note">* 1 C 코인 = 10원</p>
+        <div className="profile-edit-name">
+          <label htmlFor="profile-display-name" className="profile-edit-label">표시 이름 (아이디)</label>
+          <input
+            id="profile-display-name"
+            type="text"
+            value={editName}
+            onChange={(e) => setEditName(e.target.value)}
+            placeholder="표시할 이름을 입력하세요"
+            className="profile-edit-input"
+          />
+          <button
+            type="button"
+            className="profile-edit-btn"
+            disabled={saving || profileLoading}
+            onClick={handleSaveName}
+          >
+            {saving ? '저장 중...' : '저장'}
+          </button>
         </div>
-
+        {profile != null && (
+          <p className="profile-coins">
+            <CoinIcon size={22} />
+            <span>{profile.coins.toLocaleString()} 챌린저스 코인</span>
+          </p>
+        )}
+        {user.email && <p className="profile-email">{user.email}</p>}
         <button type="button" className="profile-signout" onClick={handleSignOut}>
           로그아웃
         </button>

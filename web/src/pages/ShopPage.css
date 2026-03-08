@@ -1,0 +1,112 @@
+.shop-page {
+  min-height: 100vh;
+  font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(160deg, #0f172a 0%, #1e293b 40%, #1e3a5f 100%);
+  background-attachment: fixed;
+  color: #fff;
+  padding: 24px;
+}
+
+.shop-inner {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.shop-back {
+  display: inline-block;
+  font-size: 14px;
+  color: #0ea5e9;
+  text-decoration: none;
+  font-weight: 500;
+  margin-bottom: 24px;
+}
+
+.shop-back:hover {
+  text-decoration: underline;
+}
+
+.shop-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 0 16px;
+  color: #e2e8f0;
+}
+
+.shop-balance {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin: 0 0 8px;
+}
+
+.shop-note {
+  font-size: 14px;
+  color: #94a3b8;
+  margin: 0 0 32px;
+}
+
+.shop-loading {
+  margin: 0;
+  color: #94a3b8;
+}
+
+.shop-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+.shop-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 28px;
+  text-align: center;
+}
+
+.shop-card-coins {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.shop-card-amount {
+  font-size: 18px;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.shop-card-price {
+  font-size: 20px;
+  font-weight: 700;
+  color: #f59e0b;
+  margin: 0 0 20px;
+}
+
+.shop-card-btn {
+  width: 100%;
+  padding: 14px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: #0ea5e9;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: opacity 0.2s ease, background 0.2s ease;
+}
+
+.shop-card-btn:hover:not(:disabled) {
+  background: #0284c7;
+}
+
+.shop-card-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

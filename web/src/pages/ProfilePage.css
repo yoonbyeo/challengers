@@ -66,6 +66,74 @@
   color: #e2e8f0;
 }
 
+.profile-edit-name {
+  margin: 20px 0;
+  text-align: left;
+}
+
+.profile-edit-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #94a3b8;
+  margin-bottom: 8px;
+}
+
+.profile-edit-input {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 15px;
+  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  font-family: inherit;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
+.profile-edit-input::placeholder {
+  color: #64748b;
+}
+
+.profile-edit-input:focus {
+  outline: none;
+  border-color: #0ea5e9;
+}
+
+.profile-edit-btn {
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  background: #0ea5e9;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s ease;
+}
+
+.profile-edit-btn:hover:not(:disabled) {
+  background: #0284c7;
+}
+
+.profile-edit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.profile-coins {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin: 0 0 12px;
+}
+
 .profile-email {
   font-size: 14px;
   color: #94a3b8;

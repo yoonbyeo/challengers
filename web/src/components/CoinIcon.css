@@ -1,0 +1,12 @@
+.coin-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #facc15 0%, #eab308 100%);
+  color: #1e293b;
+  font-weight: 800;
+  font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(234, 179, 8, 0.4);
+}
