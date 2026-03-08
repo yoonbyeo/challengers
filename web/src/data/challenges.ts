@@ -15,15 +15,19 @@ export type Challenge = {
 
 export const TOPICS = ['전체', '운동', '일상', '음식', '예능'] as const
 
+/** 모든 챌린지 참가비: 5000원 = 500 챌린저스 코인 (1코인=10원) */
+export const CHALLENGE_ENTRY_FEE_KRW = 5000
+export const CHALLENGE_ENTRY_FEE_COINS = 500
+
 export const MOCK_CHALLENGES: Challenge[] = [
-  { id: '1', title: '오늘의 1만 보 걸기', topic: '운동', entryFee: 5000, createdAt: '2025-03-01T00:00:00Z', status: 'active', participantCount: 128, endDate: '2025-03-15', description: '하루 1만 보를 걸고 인증해 보세요.' },
-  { id: '2', title: '집밥 한 끼 챌린지', topic: '음식', entryFee: 3000, createdAt: '2025-03-02T00:00:00Z', status: 'active', participantCount: 89, endDate: '2025-03-20', description: '직접 만든 집밥을 영상으로 공유하세요.' },
-  { id: '3', title: '아침 6시 기상', topic: '일상', entryFee: 10000, createdAt: '2025-03-03T00:00:00Z', status: 'active', participantCount: 256, endDate: '2025-03-25', description: '7일 연속 아침 6시 기상 인증.' },
-  { id: '4', title: '즐거운 댄스 커버', topic: '예능', entryFee: 5000, createdAt: '2025-03-04T00:00:00Z', status: 'active', participantCount: 64, endDate: '2025-03-18', description: '인기 곡으로 댄스 커버 영상을 올려 주세요.' },
-  { id: '5', title: '플랭크 3분 버티기', topic: '운동', entryFee: 2000, createdAt: '2025-03-05T00:00:00Z', status: 'active', participantCount: 72, endDate: '2025-03-22', description: '플랭크 자세를 3분 이상 유지하세요.' },
-  { id: '6', title: '나만의 레시피', topic: '음식', entryFee: 5000, createdAt: '2025-03-06T00:00:00Z', status: 'active', participantCount: 45, endDate: '2025-03-28', description: '창의적인 요리 레시피를 소개해 보세요.' },
-  { id: '7', title: '일상 vlog 1주일', topic: '일상', entryFee: 5000, createdAt: new Date().toISOString(), status: 'pending', participantCount: 8, endDate: '2025-03-30', description: '7일간의 일상을 vlog로 담아 보세요.' },
-  { id: '8', title: '노래 커버 챌린지', topic: '예능', entryFee: 4000, createdAt: '2025-03-01T00:00:00Z', status: 'canceled', participantCount: 5, endDate: '2025-03-19', description: '좋아하는 곡을 커버해 보세요.' },
+  { id: '1', title: '오늘의 1만 보 걸기', topic: '운동', entryFee: CHALLENGE_ENTRY_FEE_KRW, createdAt: '2025-03-01T00:00:00Z', status: 'active', participantCount: 128, endDate: '2025-03-15', description: '하루 1만 보를 걸고 인증해 보세요.' },
+  { id: '2', title: '집밥 한 끼 챌린지', topic: '음식', entryFee: CHALLENGE_ENTRY_FEE_KRW, createdAt: '2025-03-02T00:00:00Z', status: 'active', participantCount: 89, endDate: '2025-03-20', description: '직접 만든 집밥을 영상으로 공유하세요.' },
+  { id: '3', title: '아침 6시 기상', topic: '일상', entryFee: CHALLENGE_ENTRY_FEE_KRW, createdAt: '2025-03-03T00:00:00Z', status: 'active', participantCount: 256, endDate: '2025-03-25', description: '7일 연속 아침 6시 기상 인증.' },
+  { id: '4', title: '즐거운 댄스 커버', topic: '예능', entryFee: CHALLENGE_ENTRY_FEE_KRW, createdAt: '2025-03-04T00:00:00Z', status: 'active', participantCount: 64, endDate: '2025-03-18', description: '인기 곡으로 댄스 커버 영상을 올려 주세요.' },
+  { id: '5', title: '플랭크 3분 버티기', topic: '운동', entryFee: CHALLENGE_ENTRY_FEE_KRW, createdAt: '2025-03-05T00:00:00Z', status: 'active', participantCount: 72, endDate: '2025-03-22', description: '플랭크 자세를 3분 이상 유지하세요.' },
+  { id: '6', title: '나만의 레시피', topic: '음식', entryFee: CHALLENGE_ENTRY_FEE_KRW, createdAt: '2025-03-06T00:00:00Z', status: 'active', participantCount: 45, endDate: '2025-03-28', description: '창의적인 요리 레시피를 소개해 보세요.' },
+  { id: '7', title: '일상 vlog 1주일', topic: '일상', entryFee: CHALLENGE_ENTRY_FEE_KRW, createdAt: new Date().toISOString(), status: 'pending', participantCount: 8, endDate: '2025-03-30', description: '7일간의 일상을 vlog로 담아 보세요.' },
+  { id: '8', title: '노래 커버 챌린지', topic: '예능', entryFee: CHALLENGE_ENTRY_FEE_KRW, createdAt: '2025-03-01T00:00:00Z', status: 'canceled', participantCount: 5, endDate: '2025-03-19', description: '좋아하는 곡을 커버해 보세요.' },
 ]
 
 export function checkChallengeState(challenge: Challenge): ChallengeStatus {

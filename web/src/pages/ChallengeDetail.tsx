@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { getChallengeById, checkChallengeState, getEstimatedPrizePool, getExpectedPrizes } from '../data/challenges'
+import { getChallengeById, checkChallengeState, getEstimatedPrizePool, getExpectedPrizes, CHALLENGE_ENTRY_FEE_COINS } from '../data/challenges'
 import type { Challenge } from '../data/challenges'
 import { useAuth } from '../contexts/AuthContext'
 import { useChallengeParticipation } from '../hooks/useChallengeParticipation'
@@ -64,7 +64,7 @@ export default function ChallengeDetail() {
         ) : (
           <p className="challenge-detail-prize">목표 상금풀: {pool.toLocaleString()}원</p>
         )}
-        <p className="challenge-detail-meta">참가비: {challenge.entryFee.toLocaleString()}원 · 참가자 {countLoading ? '…' : participantCount}명 · 마감 {challenge.endDate}</p>
+        <p className="challenge-detail-meta">참가비: {challenge.entryFee.toLocaleString()}원 ({CHALLENGE_ENTRY_FEE_COINS} 챌린저스 코인) · 참가자 {countLoading ? '…' : participantCount}명 · 마감 {challenge.endDate}</p>
         {challenge.description && (
           <p className="challenge-detail-desc">{challenge.description}</p>
         )}
