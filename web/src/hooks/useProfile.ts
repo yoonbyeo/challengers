@@ -113,5 +113,35 @@ export function useProfile() {
     setProfile((prev) => (prev ? { ...prev, coins: newCoins } : null))
   }, [user?.id])
 
-  return { profile, loading, error, refresh, updateDisplayName, addCoins }
+  const deductCoins = useCallback(async (amount: number): Promise<boolean> => {
+    if (!user?.id || amount <= 0) return false
+    const { data: current, error: selectError } = await supabase
+      .from('profiles')
+      .select('coins')
+      .eq('user_id', user.id)
+      .single()
+
+    if (selectError || current == null) {
+      setError(selectError?.message ?? '프로필을 찾을 수 없습니다.')
+      return false
+    }
+
+    const currentCoins = current.coins ?? 0
+    if (currentCoins < amount) return false
+
+    const newCoins = currentCoins - amount
+    const { error: updateErr } = await supabase
+      .from('profiles')
+      .update({ coins: newCoins })
+      .eq('user_id', user.id)
+
+    if (updateErr) {
+      setError(updateErr.message)
+      return false
+    }
+    setProfile((prev) => (prev ? { ...prev, coins: newCoins } : null))
+    return true
+  }, [user?.id])
+
+  return { profile, loading, error, refresh, updateDisplayName, addCoins, deductCoins }
 }
