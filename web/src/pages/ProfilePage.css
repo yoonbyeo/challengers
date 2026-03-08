@@ -1,0 +1,96 @@
+.profile-page {
+  min-height: 100vh;
+  font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(160deg, #0f172a 0%, #1e293b 40%, #1e3a5f 100%);
+  background-attachment: fixed;
+  color: #fff;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-card {
+  width: 100%;
+  max-width: 400px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 32px;
+  text-align: center;
+}
+
+.profile-back {
+  display: inline-block;
+  font-size: 14px;
+  color: #0ea5e9;
+  text-decoration: none;
+  font-weight: 500;
+  margin-bottom: 24px;
+}
+
+.profile-back:hover {
+  text-decoration: underline;
+}
+
+.profile-avatar-wrap {
+  margin-bottom: 20px;
+}
+
+.profile-avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(255, 255, 255, 0.15);
+}
+
+.profile-avatar-placeholder {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: #0ea5e9;
+  color: #fff;
+  font-size: 36px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.profile-name {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 8px;
+  color: #e2e8f0;
+}
+
+.profile-email {
+  font-size: 14px;
+  color: #94a3b8;
+  margin: 0 0 28px;
+}
+
+.profile-signout {
+  padding: 14px 28px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: transparent;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.profile-signout:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.profile-loading {
+  margin: 0;
+  color: #94a3b8;
+}

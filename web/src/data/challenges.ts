@@ -29,3 +29,29 @@ export function getChallengesByTopic(topic: string): Challenge[] {
   if (topic === '전체') return [...MOCK_CHALLENGES]
   return MOCK_CHALLENGES.filter((c) => c.topic === topic)
 }
+
+export type ChallengeVideo = {
+  id: string
+  challengeId: string
+  title: string
+  likeCount: number
+  thumbnailUrl?: string
+}
+
+const MOCK_VIDEOS: ChallengeVideo[] = [
+  { id: 'v1', challengeId: '1', title: '오늘 1만 보 완료!', likeCount: 42 },
+  { id: 'v2', challengeId: '1', title: '걷기 기록 인증', likeCount: 28 },
+  { id: 'v3', challengeId: '2', title: '집밥 한 끼 레시피', likeCount: 56 },
+  { id: 'v4', challengeId: '2', title: '오늘의 요리', likeCount: 31 },
+  { id: 'v5', challengeId: '3', title: '6시 기상 인증 7일차', likeCount: 89 },
+  { id: 'v6', challengeId: '3', title: '아침 루틴 공유', likeCount: 67 },
+  { id: 'v7', challengeId: '4', title: '댄스 커버 영상', likeCount: 120 },
+  { id: 'v8', challengeId: '5', title: '플랭크 3분 성공', likeCount: 45 },
+  { id: 'v9', challengeId: '6', title: '나만의 파스타', likeCount: 38 },
+  { id: 'v10', challengeId: '7', title: '일상 vlog 1주일', likeCount: 52 },
+  { id: 'v11', challengeId: '8', title: '노래 커버', likeCount: 74 },
+]
+
+export function getMockVideosByChallengeId(challengeId: string): ChallengeVideo[] {
+  return MOCK_VIDEOS.filter((v) => v.challengeId === challengeId)
+}

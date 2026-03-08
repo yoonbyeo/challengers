@@ -16,15 +16,6 @@ export default function HomePage() {
 
   return (
     <div className="home-page">
-      <header className="home-header">
-        <Link to="/" className="home-logo">
-          챌린저스
-        </Link>
-        <Link to="/login" className="home-login">
-          로그인
-        </Link>
-      </header>
-
       <section className="home-main-actions">
         <Link to="/login" className="home-btn-participate">
           참여하기

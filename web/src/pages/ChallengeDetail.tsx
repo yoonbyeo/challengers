@@ -14,6 +14,7 @@ export default function ChallengeDetail() {
     return (
       <div className="challenge-detail-page">
         <div className="challenge-detail-card">
+          <Link to="/" className="challenge-detail-back">← 돌아가기</Link>
           <p>챌린지를 찾을 수 없습니다.</p>
           <Link to="/" className="challenge-detail-btn-browse">둘러보기</Link>
         </div>
@@ -24,6 +25,7 @@ export default function ChallengeDetail() {
   return (
     <div className="challenge-detail-page">
       <div className="challenge-detail-card">
+        <Link to="/" className="challenge-detail-back">← 돌아가기</Link>
         <span className="challenge-detail-badge">{challenge.topic}</span>
         <h1 className="challenge-detail-title">{challenge.title}</h1>
         <p className="challenge-detail-prize">상금 {challenge.prize}</p>
@@ -36,7 +38,7 @@ export default function ChallengeDetail() {
           <button type="button" className="challenge-detail-btn-participate" onClick={handleParticipate}>
             참여하기
           </button>
-          <Link to="/" className="challenge-detail-btn-browse">
+          <Link to={`/challenge/${id}/browse`} className="challenge-detail-btn-browse">
             둘러보기
           </Link>
         </div>
