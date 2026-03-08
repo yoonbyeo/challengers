@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { TOPICS, getChallengesByTopic } from '../data/challenges'
+import { TOPICS, getChallengesByTopic, getEstimatedPrizePool } from '../data/challenges'
 import type { Challenge } from '../data/challenges'
 import './HomePage.css'
 
@@ -32,7 +32,7 @@ export default function HomePage() {
           >
             <span className="home-card-badge">{c.topic}</span>
             <h3 className="home-card-title">{c.title}</h3>
-            <p className="home-card-prize">상금 {c.prize}</p>
+            <p className="home-card-prize">상금 {getEstimatedPrizePool(c).toLocaleString()}원</p>
             <p className="home-card-meta">참가자 {c.participantCount}명 · D-{c.endDate}</p>
           </Link>
         ))}
