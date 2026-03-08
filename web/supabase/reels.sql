@@ -20,6 +20,10 @@ drop policy if exists "Users can insert own" on public.reels;
 create policy "Users can insert own"
   on public.reels for insert with check (auth.uid() = user_id);
 
+drop policy if exists "Users can delete own reel" on public.reels;
+create policy "Users can delete own reel"
+  on public.reels for delete using (auth.uid() = user_id);
+
 -- Storage: allow authenticated users to upload into their own folder (path: {user_id}/...)
 -- Run this after the "reels" bucket exists (Storage -> New bucket -> reels, Public).
 drop policy if exists "Users can upload to own folder" on storage.objects;
@@ -35,3 +39,12 @@ drop policy if exists "Public can read reels files" on storage.objects;
 create policy "Public can read reels files"
   on storage.objects for select to public
   using (bucket_id = 'reels');
+
+-- Storage: allow users to delete their own files in reels bucket
+drop policy if exists "Users can delete own reel file" on storage.objects;
+create policy "Users can delete own reel file"
+  on storage.objects for delete to authenticated
+  using (
+    bucket_id = 'reels'
+    and (storage.foldername(name))[1] = auth.uid()::text
+  );

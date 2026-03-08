@@ -35,7 +35,7 @@ export function useReels() {
       .order('created_at', { ascending: false })
 
     if (fetchError) {
-      setError(fetchError.message)
+      setError('영상을 불러올 수 없습니다. ' + (fetchError.message || ''))
       setList([])
       setLoading(false)
       return
@@ -104,5 +104,30 @@ export function useReels() {
 
   const clearError = useCallback(() => setError(null), [])
 
-  return { list, loading, error, uploading, upload, refresh: fetchList, clearError }
+  const deleteReel = useCallback(
+    async (reelId: string): Promise<{ success: true } | { success: false; message: string }> => {
+      if (!user?.id) {
+        const msg = '로그인이 필요합니다.'
+        setError(msg)
+        return { success: false, message: msg }
+      }
+      const reel = list.find((r) => r.id === reelId)
+      if (!reel || reel.user_id !== user.id) {
+        const msg = '본인 영상만 삭제할 수 있습니다.'
+        setError(msg)
+        return { success: false, message: msg }
+      }
+      const { error: deleteRowError } = await supabase.from('reels').delete().eq('id', reelId).eq('user_id', user.id)
+      if (deleteRowError) {
+        setError(deleteRowError.message)
+        return { success: false, message: deleteRowError.message }
+      }
+      await supabase.storage.from(BUCKET).remove([reel.storage_path])
+      await fetchList()
+      return { success: true }
+    },
+    [user?.id, list, fetchList]
+  )
+
+  return { list, loading, error, uploading, upload, deleteReel, refresh: fetchList, clearError }
 }

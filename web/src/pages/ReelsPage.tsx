@@ -1,11 +1,16 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { useReels, type Reel } from '../hooks/useReels'
+import { useReelLikes } from '../hooks/useReelLikes'
+import { useSaveReel } from '../hooks/useSaveReel'
+import { useFollow } from '../hooks/useFollow'
+import { useAuthorProfile } from '../hooks/useAuthorProfile'
+import { useReelComments } from '../hooks/useReelComments'
 import './ReelsPage.css'
 
 export default function ReelsPage() {
   const { user } = useAuth()
-  const { list, loading, error, uploading, upload, clearError } = useReels()
+  const { list, loading, error, uploading, upload, deleteReel, refresh, clearError } = useReels()
   const [modalOpen, setModalOpen] = useState(false)
   const [title, setTitle] = useState('')
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
@@ -18,6 +23,7 @@ export default function ReelsPage() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const recordedChunksRef = useRef<Blob[]>([])
   const previewRef = useRef<HTMLVideoElement>(null)
+  const feedRef = useRef<HTMLDivElement>(null)
 
   const handleUploadClick = () => {
     if (!user) return
@@ -148,7 +154,7 @@ export default function ReelsPage() {
         </button>
       )}
 
-      <div className="reels-feed">
+      <div ref={feedRef} className="reels-feed">
         {loading ? (
           <div className="reels-slide reels-loading">
             <p>로딩 중...</p>
@@ -164,7 +170,14 @@ export default function ReelsPage() {
           </div>
         ) : (
           list.map((reel) => (
-            <ReelSlide key={reel.id} reel={reel} />
+            <ReelSlide
+              key={reel.id}
+              reel={reel}
+              feedRef={feedRef}
+              currentUserId={user?.id ?? null}
+              onDelete={deleteReel}
+              onDeleted={refresh}
+            />
           ))
         )}
       </div>
@@ -246,11 +259,78 @@ export default function ReelsPage() {
   )
 }
 
-function ReelSlide({ reel }: { reel: Reel }) {
+function ReelSlide({
+  reel,
+  feedRef,
+  currentUserId,
+  onDelete,
+  onDeleted,
+}: {
+  reel: Reel
+  feedRef: React.RefObject<HTMLDivElement | null>
+  currentUserId: string | null
+  onDelete?: (reelId: string) => Promise<{ success: boolean; message?: string }>
+  onDeleted?: () => void
+}) {
+  const slideRef = useRef<HTMLDivElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
+  const [commentOpen, setCommentOpen] = useState(false)
+  const [commentText, setCommentText] = useState('')
+  const { likeCount, isLiked, toggleLike, toggling: likeToggling } = useReelLikes(reel.id)
+  const { isSaved, toggleSave, toggling: saveToggling } = useSaveReel(reel.id)
+  const { isFollowing, toggleFollow, toggling: followToggling } = useFollow(reel.user_id)
+  const { displayName } = useAuthorProfile(reel.user_id)
+  const { comments, loading: commentsLoading, submitting, addComment, deleteComment } = useReelComments(reel.id)
+  const isOwn = currentUserId === reel.user_id
+
+  useEffect(() => {
+    const feed = feedRef.current
+    const slide = slideRef.current
+    const video = videoRef.current
+    if (!feed || !slide || !video) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.target !== slide) return
+          if (entry.isIntersecting) {
+            video.play().catch(() => {})
+          } else {
+            video.pause()
+          }
+        })
+      },
+      { root: feed, threshold: 0.5 }
+    )
+    observer.observe(slide)
+    return () => observer.disconnect()
+  }, [feedRef, reel.id])
+
+  const handleShare = useCallback(() => {
+    const url = `${window.location.origin}${window.location.pathname}?reel=${reel.id}`
+    if (navigator.share) {
+      navigator.share({ title: reel.title || '릴스', url }).catch(() => {
+        navigator.clipboard.writeText(url).then(() => alert('링크가 복사되었습니다.'))
+      })
+    } else {
+      navigator.clipboard.writeText(url).then(() => alert('링크가 복사되었습니다.'))
+    }
+  }, [reel.id, reel.title])
+
+  const handleDelete = useCallback(async () => {
+    if (!onDelete || !confirm('이 영상을 삭제할까요?')) return
+    const result = await onDelete(reel.id)
+    if (result.success) onDeleted?.()
+    else alert(result.message || '삭제에 실패했습니다.')
+  }, [reel.id, onDelete, onDeleted])
+
+  const handleSubmitComment = useCallback(async () => {
+    const result = await addComment(commentText)
+    if (result.success) setCommentText('')
+    else alert(result.message || '댓글 작성에 실패했습니다.')
+  }, [addComment, commentText])
 
   return (
-    <div className="reels-slide">
+    <div ref={slideRef} className="reels-slide">
       <video
         ref={videoRef}
         src={reel.video_url}
@@ -259,9 +339,122 @@ function ReelSlide({ reel }: { reel: Reel }) {
         muted
         loop
         preload="metadata"
-        onLoadedData={() => videoRef.current?.play().catch(() => {})}
       />
-      {reel.title && <p className="reels-slide-title">{reel.title}</p>}
+      <div className="reels-slide-info">
+        <div className="reels-slide-author">
+          <span className="reels-slide-author-avatar">{displayName.charAt(0)}</span>
+          <span className="reels-slide-author-name">{displayName}</span>
+          {!isOwn && currentUserId && (
+            <button
+              type="button"
+              className="reels-slide-follow-btn"
+              onClick={() => toggleFollow()}
+              disabled={followToggling}
+            >
+              {isFollowing ? '팔로우 중' : '팔로우'}
+            </button>
+          )}
+        </div>
+        {reel.title && <p className="reels-slide-title">{reel.title}</p>}
+      </div>
+      <div className="reels-slide-actions">
+        <button
+          type="button"
+          className="reels-action-btn"
+          onClick={() => toggleLike()}
+          disabled={likeToggling}
+          aria-label="좋아요"
+        >
+          <span className="reels-action-icon">{isLiked ? '❤️' : '🤍'}</span>
+          <span className="reels-action-count">{likeCount}</span>
+        </button>
+        <button
+          type="button"
+          className="reels-action-btn"
+          onClick={() => setCommentOpen((o) => !o)}
+          aria-label="댓글"
+        >
+          <span className="reels-action-icon">💬</span>
+          <span className="reels-action-count">{comments.length}</span>
+        </button>
+        <button type="button" className="reels-action-btn" onClick={handleShare} aria-label="공유">
+          <span className="reels-action-icon">↗️</span>
+          <span>공유</span>
+        </button>
+        <button
+          type="button"
+          className="reels-action-btn"
+          onClick={() => toggleSave()}
+          disabled={saveToggling}
+          aria-label="저장"
+        >
+          <span className="reels-action-icon">{isSaved ? '🔖' : '📑'}</span>
+          <span>{isSaved ? '저장됨' : '저장'}</span>
+        </button>
+        {isOwn && onDelete && (
+          <button type="button" className="reels-action-btn reels-action-delete" onClick={handleDelete} aria-label="삭제">
+            <span className="reels-action-icon">🗑️</span>
+            <span>삭제</span>
+          </button>
+        )}
+      </div>
+
+      {commentOpen && (
+        <div className="reels-comment-panel">
+          <div className="reels-comment-header">
+            <span>댓글 {comments.length}개</span>
+            <button type="button" className="reels-comment-close" onClick={() => setCommentOpen(false)} aria-label="닫기">
+              ✕
+            </button>
+          </div>
+          <div className="reels-comment-list">
+            {commentsLoading ? (
+              <p className="reels-comment-loading">로딩 중...</p>
+            ) : comments.length === 0 ? (
+              <p className="reels-comment-empty">아직 댓글이 없습니다.</p>
+            ) : (
+              comments.map((c) => (
+                <div key={c.id} className="reels-comment-item">
+                  <div className="reels-comment-body">
+                    <span className="reels-comment-author">{c.author_display_name}</span>
+                    <span className="reels-comment-text">{c.body}</span>
+                  </div>
+                  {currentUserId === c.user_id && (
+                    <button
+                      type="button"
+                      className="reels-comment-delete"
+                      onClick={() => deleteComment(c.id)}
+                      aria-label="댓글 삭제"
+                    >
+                      삭제
+                    </button>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+          {currentUserId && (
+            <div className="reels-comment-input-wrap">
+              <input
+                type="text"
+                className="reels-comment-input"
+                placeholder="댓글 입력..."
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSubmitComment()}
+              />
+              <button
+                type="button"
+                className="reels-comment-submit"
+                onClick={handleSubmitComment}
+                disabled={submitting || !commentText.trim()}
+              >
+                {submitting ? '등록 중...' : '등록'}
+              </button>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }

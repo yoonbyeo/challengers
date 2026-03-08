@@ -13,6 +13,11 @@ drop policy if exists "Users can read own profile" on public.profiles;
 create policy "Users can read own profile"
   on public.profiles for select using (auth.uid() = user_id);
 
+-- Allow reading any profile for display (e.g. reel author name)
+drop policy if exists "Anyone can read profiles" on public.profiles;
+create policy "Anyone can read profiles"
+  on public.profiles for select to public using (true);
+
 drop policy if exists "Users can update own profile" on public.profiles;
 create policy "Users can update own profile"
   on public.profiles for update using (auth.uid() = user_id);
