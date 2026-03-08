@@ -1,5 +1,6 @@
 import { useState, FormEvent } from 'react'
 import { supabase } from '../supabaseClient'
+import './AuthPage.css'
 
 type Mode = 'login' | 'signup'
 
@@ -15,6 +16,17 @@ function mapAuthError(message: string): string {
   if (message.includes('User already registered')) return '이미 가입된 이메일입니다. 로그인해 주세요.'
   if (message.includes('Password')) return '비밀번호는 6자 이상으로 설정해 주세요.'
   return message || '오류가 발생했습니다. 다시 시도해 주세요.'
+}
+
+function GoogleIcon() {
+  return (
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+    </svg>
+  )
 }
 
 export default function AuthPage() {
@@ -80,180 +92,81 @@ export default function AuthPage() {
   }
 
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <h1 style={styles.title}>챌린저스</h1>
-        <div style={styles.tabs}>
+    <div className="auth-page">
+      <div className="auth-card">
+        <h1 className="auth-title">챌린저스</h1>
+        <div className="auth-tabs">
           <button
             type="button"
-            style={{ ...styles.tab, ...(mode === 'login' ? styles.tabActive : {}) }}
+            className={`auth-tab ${mode === 'login' ? 'active' : ''}`}
             onClick={() => { setMode('login'); setError(null); setSuccessMessage(null); }}
           >
             로그인
           </button>
           <button
             type="button"
-            style={{ ...styles.tab, ...(mode === 'signup' ? styles.tabActive : {}) }}
+            className={`auth-tab ${mode === 'signup' ? 'active' : ''}`}
             onClick={() => { setMode('signup'); setError(null); setSuccessMessage(null); }}
           >
             회원가입
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} style={styles.form}>
-          <label style={styles.label}>이메일</label>
+        <form onSubmit={handleSubmit} className="auth-form">
+          <label className="auth-label">이메일</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="example@email.com"
             required
-            style={styles.input}
+            className="auth-input"
             autoComplete="email"
           />
-          <label style={styles.label}>비밀번호</label>
+          <label className="auth-label">비밀번호</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder={isSignup ? '6자 이상' : '비밀번호'}
             required
-            style={styles.input}
+            className="auth-input"
             autoComplete={isSignup ? 'new-password' : 'current-password'}
           />
           {isSignup && (
             <>
-              <label style={styles.label}>비밀번호 확인</label>
+              <label className="auth-label">비밀번호 확인</label>
               <input
                 type="password"
                 value={passwordConfirm}
                 onChange={(e) => setPasswordConfirm(e.target.value)}
                 placeholder="비밀번호 다시 입력"
                 required
-                style={styles.input}
+                className="auth-input"
                 autoComplete="new-password"
               />
             </>
           )}
-          {error && <p style={styles.error}>{error}</p>}
-          {successMessage && <p style={styles.success}>{successMessage}</p>}
-          <button type="submit" disabled={loading} style={styles.submit}>
+          {error && <p className="auth-error">{error}</p>}
+          {successMessage && <p className="auth-success">{successMessage}</p>}
+          <button type="submit" disabled={loading} className="auth-submit">
             {loading ? '처리 중...' : isSignup ? '회원가입' : '로그인'}
           </button>
         </form>
 
-        <div style={styles.divider}>
+        <div className="auth-divider">
           <span>또는</span>
         </div>
         <button
           type="button"
           onClick={handleGoogleAuth}
           disabled={loading}
-          style={styles.googleBtn}
+          className="auth-google"
         >
+          <GoogleIcon />
           {isSignup ? '구글로 회원가입' : '구글로 로그인'}
         </button>
       </div>
     </div>
   )
-}
-
-const styles: Record<string, React.CSSProperties> = {
-  container: {
-    minHeight: '100vh',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 16,
-    background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
-  },
-  card: {
-    width: '100%',
-    maxWidth: 400,
-    padding: 32,
-    borderRadius: 12,
-    backgroundColor: '#fff',
-    boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
-  },
-  title: {
-    margin: '0 0 24px',
-    fontSize: 28,
-    fontWeight: 700,
-    textAlign: 'center',
-    color: '#1a1a2e',
-  },
-  tabs: {
-    display: 'flex',
-    gap: 0,
-    marginBottom: 24,
-    borderBottom: '1px solid #e0e0e0',
-  },
-  tab: {
-    flex: 1,
-    padding: '12px 16px',
-    border: 'none',
-    background: 'transparent',
-    fontSize: 15,
-    fontWeight: 500,
-    color: '#666',
-    cursor: 'pointer',
-  },
-  tabActive: {
-    color: '#16213e',
-    borderBottom: '2px solid #16213e',
-    marginBottom: -1,
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 16,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: 500,
-    color: '#333',
-  },
-  input: {
-    padding: '12px 14px',
-    fontSize: 15,
-    border: '1px solid #ddd',
-    borderRadius: 8,
-    outline: 'none',
-  },
-  error: {
-    margin: 0,
-    fontSize: 14,
-    color: '#c62828',
-  },
-  success: {
-    margin: 0,
-    fontSize: 14,
-    color: '#2e7d32',
-  },
-  submit: {
-    padding: 14,
-    fontSize: 16,
-    fontWeight: 600,
-    color: '#fff',
-    backgroundColor: '#16213e',
-    border: 'none',
-    borderRadius: 8,
-    cursor: 'pointer',
-  },
-  divider: {
-    margin: '24px 0',
-    textAlign: 'center',
-    fontSize: 14,
-    color: '#888',
-  },
-  googleBtn: {
-    padding: 14,
-    fontSize: 15,
-    fontWeight: 500,
-    color: '#333',
-    backgroundColor: '#f5f5f5',
-    border: '1px solid #ddd',
-    borderRadius: 8,
-    cursor: 'pointer',
-  },
 }
