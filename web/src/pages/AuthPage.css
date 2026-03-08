@@ -46,6 +46,20 @@
   background-size: 200% 100%;
 }
 
+.auth-home-link {
+  position: absolute;
+  top: 16px;
+  left: 20px;
+  font-size: 14px;
+  color: #6366f1;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.auth-home-link:hover {
+  text-decoration: underline;
+}
+
 .auth-title {
   margin: 0 0 28px;
   font-size: 32px;
