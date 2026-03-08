@@ -1,0 +1,279 @@
+.reels-page {
+  position: relative;
+  height: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+  font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #0f172a;
+  color: #fff;
+}
+
+.reels-upload-btn {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 10;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  background: #0ea5e9;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s ease;
+}
+
+.reels-upload-btn:hover:not(:disabled) {
+  background: #0284c7;
+}
+
+.reels-upload-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.reels-feed {
+  height: 100%;
+  min-height: 100vh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+}
+
+.reels-slide {
+  height: 100vh;
+  min-height: 100vh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+}
+
+.reels-video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.reels-slide-title {
+  position: absolute;
+  bottom: 48px;
+  left: 24px;
+  right: 24px;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #e2e8f0;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+}
+
+.reels-loading,
+.reels-error,
+.reels-empty {
+  color: #94a3b8;
+  font-size: 16px;
+}
+
+.reels-empty-hint {
+  margin-top: 12px;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.reels-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.reels-modal {
+  width: 100%;
+  max-width: 400px;
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.reels-modal-title {
+  margin: 0 0 20px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+
+.reels-modal-file {
+  display: block;
+  width: 100%;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: #e2e8f0;
+}
+
+.reels-modal-filename {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.reels-modal-input {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 15px;
+  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  font-family: inherit;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+}
+
+.reels-modal-input::placeholder {
+  color: #64748b;
+}
+
+.reels-modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.reels-modal-cancel,
+.reels-modal-submit {
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: inherit;
+  border: none;
+}
+
+.reels-modal-cancel {
+  color: #94a3b8;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.reels-modal-cancel:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.reels-modal-submit {
+  color: #fff;
+  background: #0ea5e9;
+}
+
+.reels-modal-submit:hover:not(:disabled) {
+  background: #0284c7;
+}
+
+.reels-modal-cancel:disabled,
+.reels-modal-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.reels-modal-wide {
+  max-width: 520px;
+}
+
+.reels-modal-label {
+  margin: 0 0 8px;
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.reels-modal-divider {
+  margin: 16px 0;
+  font-size: 13px;
+  color: #64748b;
+  text-align: center;
+}
+
+.reels-modal-camera-btn {
+  width: 100%;
+  padding: 12px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.reels-modal-camera-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.reels-camera-box {
+  margin-bottom: 16px;
+}
+
+.reels-camera-preview {
+  width: 100%;
+  max-height: 320px;
+  background: #000;
+  border-radius: 12px;
+  object-fit: cover;
+  margin-bottom: 12px;
+}
+
+.reels-camera-error {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: #f87171;
+}
+
+.reels-camera-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.reels-modal-record-btn {
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  background: #0ea5e9;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.reels-modal-record-btn:hover {
+  background: #0284c7;
+}
+
+.reels-modal-stop-btn {
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  background: #dc2626;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.reels-modal-stop-btn:hover {
+  background: #b91c1c;
+}

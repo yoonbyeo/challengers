@@ -38,6 +38,9 @@ export default function Layout() {
           <NavLink to="/shop" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
             상점
           </NavLink>
+          <NavLink to="/reels" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+            릴스
+          </NavLink>
           {!loading && (
             user ? (
               <button type="button" className="sidebar-link sidebar-logout" onClick={handleSignOut}>

@@ -16,3 +16,11 @@
 ```
 
 실행 후 `public.profiles` 테이블과 RLS 정책이 생성되며, 로그인한 사용자만 자신의 행을 읽고/쓰고/추가할 수 있습니다.
+
+## reels 테이블 + Storage 버킷 (릴스 페이지)
+
+릴스/쇼츠 페이지와 영상 업로드를 사용하려면:
+
+1. **SQL Editor**에서 `reels.sql` 내용 실행 → `public.reels` 테이블 생성.
+2. **Storage** 메뉴에서 버킷 생성: 이름 `reels`, **Public bucket** 체크 (영상 재생 URL 공개).
+3. Storage 정책: 업로드는 인증된 사용자만 허용하도록 설정 (Supabase 기본 또는 RLS).
