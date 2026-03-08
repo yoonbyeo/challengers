@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { TOPICS, getChallengesByTopic } from '../data/challenges'
 import type { Challenge } from '../data/challenges'
@@ -6,25 +6,10 @@ import './HomePage.css'
 
 export default function HomePage() {
   const [selectedTopic, setSelectedTopic] = useState<string>('전체')
-  const gridRef = useRef<HTMLDivElement>(null)
-
   const challenges = getChallengesByTopic(selectedTopic)
-
-  const handleBrowse = () => {
-    gridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }
 
   return (
     <div className="home-page">
-      <section className="home-main-actions">
-        <Link to="/login" className="home-btn-participate">
-          참여하기
-        </Link>
-        <button type="button" className="home-btn-browse" onClick={handleBrowse}>
-          둘러보기
-        </button>
-      </section>
-
       <div className="home-tabs">
         {TOPICS.map((topic) => (
           <button
@@ -38,7 +23,7 @@ export default function HomePage() {
         ))}
       </div>
 
-      <div className="home-grid home-grid-ref" ref={gridRef}>
+      <div className="home-grid">
         {challenges.map((c: Challenge) => (
           <Link
             key={c.id}
