@@ -274,6 +274,9 @@ function ReelSlide({
 }) {
   const slideRef = useRef<HTMLDivElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
+  const userPausedRef = useRef(false)
+  const [isMuted, setIsMuted] = useState(true)
+  const [userPaused, setUserPaused] = useState(false)
   const [commentOpen, setCommentOpen] = useState(false)
   const [commentText, setCommentText] = useState('')
   const { likeCount, isLiked, toggleLike, toggling: likeToggling } = useReelLikes(reel.id)
@@ -282,6 +285,8 @@ function ReelSlide({
   const { displayName } = useAuthorProfile(reel.user_id)
   const { comments, loading: commentsLoading, submitting, addComment, deleteComment } = useReelComments(reel.id)
   const isOwn = currentUserId === reel.user_id
+
+  userPausedRef.current = userPaused
 
   useEffect(() => {
     const feed = feedRef.current
@@ -293,7 +298,7 @@ function ReelSlide({
         entries.forEach((entry) => {
           if (entry.target !== slide) return
           if (entry.isIntersecting) {
-            video.play().catch(() => {})
+            if (!userPausedRef.current) video.play().catch(() => {})
           } else {
             video.pause()
           }
@@ -329,6 +334,25 @@ function ReelSlide({
     else alert(result.message || '댓글 작성에 실패했습니다.')
   }, [addComment, commentText])
 
+  const toggleMuted = useCallback(() => setIsMuted((m) => !m), [])
+  const togglePause = useCallback(() => {
+    const video = videoRef.current
+    const nextPaused = !userPaused
+    setUserPaused(nextPaused)
+    if (nextPaused) {
+      video?.pause()
+    } else {
+      const slide = slideRef.current
+      const feed = feedRef.current
+      if (slide && feed && video) {
+        const rect = slide.getBoundingClientRect()
+        const feedRect = feed.getBoundingClientRect()
+        const mid = feedRect.top + feedRect.height / 2
+        if (rect.top <= mid && rect.bottom >= mid) video.play().catch(() => {})
+      }
+    }
+  }, [feedRef, userPaused])
+
   return (
     <div ref={slideRef} className="reels-slide">
       <video
@@ -336,10 +360,28 @@ function ReelSlide({
         src={reel.video_url}
         className="reels-video"
         playsInline
-        muted
+        muted={isMuted}
         loop
         preload="metadata"
       />
+      <div className="reels-slide-video-controls">
+        <button
+          type="button"
+          className="reels-video-control-btn"
+          onClick={toggleMuted}
+          aria-label={isMuted ? '소리 켜기' : '소리 끄기'}
+        >
+          <span className="reels-video-control-icon">{isMuted ? '🔇' : '🔊'}</span>
+        </button>
+        <button
+          type="button"
+          className="reels-video-control-btn"
+          onClick={togglePause}
+          aria-label={userPaused ? '재생' : '일시정지'}
+        >
+          <span className="reels-video-control-icon">{userPaused ? '▶️' : '⏸️'}</span>
+        </button>
+      </div>
       <div className="reels-slide-info">
         <div className="reels-slide-author">
           <span className="reels-slide-author-avatar">{displayName.charAt(0)}</span>
